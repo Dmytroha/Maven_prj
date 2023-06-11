@@ -14,19 +14,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- declaring variables -->
         <gson.version>2.10.1</gson.version>
+        <!--
         <docker.tag.name>latest</docker.tag.name>
         <docker.maven.plugin.version>0.43.0</docker.maven.plugin.version>
         <docker.skip.push>true</docker.skip.push>
         <docker.repository.name>test-maven</docker.repository.name>
+        <docker.outputDirectory>docker/my1795/docker-demo/1.0-SNAPSHOT/build/maven-test</docker.outputDirectory>
         <jacoco.version>0.8.6</jacoco.version>
         <jacoco.min.coverage>0.85</jacoco.min.coverage>
         <descriptor.ref>jar-with-dependencies</descriptor.ref>
+         <site.plugin.version>3.7.1</site.plugin.version>-->
         <slf4j.version>2.0.5</slf4j.version>
-        <custom.finalName>my-project-name</custom.finalName>
-        <site.plugin.version>3.7.1</site.plugin.version>
+        <custom.finalName>myname</custom.finalName>
         <maven.assembly.plugin.version>3.3.0</maven.assembly.plugin.version>
         <maven.project.info.reports.plugin.vervion>3.0.0</maven.project.info.reports.plugin.vervion>
-        <docker.outputDirectory>docker/my1795/docker-demo/1.0-SNAPSHOT/build/maven-test</docker.outputDirectory>
         <mainClass.path>org.example.Main</mainClass.path>
 
     </properties>
@@ -43,7 +44,61 @@
             <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
+    <build>
+        <finalName>myname-thin</finalName>
+        <plugins>
 
+            <!-- Set Executable Class-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>libs/</classpathPrefix>
+                            <mainClass>
+                                ${mainClass.path}
+                            </mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
 
+            <!-- Maven Assembly Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+
+                <configuration>
+                    <finalName>${custom.finalName}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>
+                                ${mainClass.path}
+                            </mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
